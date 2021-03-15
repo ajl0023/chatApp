@@ -12,7 +12,9 @@ const path = require("path");
 const PORT = process.env.PORT || 5500;
 const app = express();
 const server = require("http").createServer(app);
-server.listen(PORT, () => {});
+server.listen(PORT, () => {
+  console.log(`connected to port ${PORT}`);
+});
 const io = require("socket.io")(server);
 app.use(express.static(path.join(__dirname, "../client/build")));
 
@@ -20,7 +22,6 @@ app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 io.use((socket, next) => {
-
   next();
 });
 io.on("connection", (socket) => {
@@ -58,7 +59,6 @@ io.on("connection", (socket) => {
     socket.emit("getUsers", findUsers);
   });
   socket.on("getMessages", (name, room, text) => {
-   
     const getUsers = getUsersInRoom(room);
     const findUser = getUsers.find((users) => {
       if (users.id === socket.id) {
