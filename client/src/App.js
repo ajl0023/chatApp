@@ -31,9 +31,7 @@ const App = () => {
       <Route
         path="/chat"
         exact
-        render={(props) => (
-          <Chat  socket={socket} {...props} />
-        )}
+        render={(props) => <Chat socket={socket} {...props} />}
       ></Route>
     </Router>
   );

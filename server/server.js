@@ -15,7 +15,11 @@ const server = require("http").createServer(app);
 server.listen(PORT, () => {
   console.log(`connected to port ${PORT}`);
 });
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 app.get("/", function (req, res) {
@@ -25,7 +29,7 @@ io.use((socket, next) => {
   next();
 });
 io.on("connection", (socket) => {
-  console.log("client connected");
+  console.log("connected");
   socket.on("join", (name, room, id, callback) => {
     const user = {};
     user["name"] = name;
@@ -42,9 +46,12 @@ io.on("connection", (socket) => {
     socket.join(room);
 
     io.in(room).emit("getUsers", getUsersInRoom(room));
+    console.log(socket);
+    console.log(socket.to(room));
     console.log(room);
 
     console.log(socket.to(room).broadcast);
+
     socket.to(room).broadcast.emit("getMessages", {
       user: "admin",
       text: `User ${name} has just joined`,
