@@ -9,14 +9,14 @@ export default function SignIn(props) {
   const [error, setError] = useState(false);
   const history = useHistory();
   useEffect(() => {
-    getNewSocket();
+    // getNewSocket();
     getSocket.on("connect", () => {
       
     });
     
-    if (!getSocket.id) {
-      io.connect();
-    }
+    // if (!getSocket.id) {
+    //   io.connect();
+    // }
 
     getSocket.on("join", (data) => {
       if (data.error) {
