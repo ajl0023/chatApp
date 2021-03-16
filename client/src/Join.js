@@ -1,21 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import io from "socket.io-client";
 import { getNewSocket, getSocket } from "./socketInstance";
 export default function SignIn(props) {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
-  const [socket, setSocket] = useState();
   const [error, setError] = useState(false);
+
   const history = useHistory();
   useEffect(() => {
     getNewSocket();
     getSocket.on("connect", () => {});
-
     if (!getSocket.id) {
       io.connect();
     }
-
     getSocket.on("join", (data) => {
       if (data.error) {
         setError(data);
@@ -28,16 +26,15 @@ export default function SignIn(props) {
         if (resp.error) {
           return;
         } else {
+          props.getCurrentUser(getSocket.id);
           history.push(`/chat?name=${name}&room=${room}`);
         }
       });
     }
   };
-
   const handleChange = (e) => {
     setName(e.target.value);
   };
-
   return (
     <div className="join-wrapper">
       <div
@@ -70,7 +67,6 @@ export default function SignIn(props) {
           </div>
         </div>
 
-        {/* <Link to={`/chat?name=${name}&room=${room}`} className="join-link"> */}
         <button
           className="join-signin-but"
           onClick={(e) =>
@@ -80,7 +76,6 @@ export default function SignIn(props) {
         >
           Sign In
         </button>
-        {/* </Link> */}
       </div>
     </div>
   );

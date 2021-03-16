@@ -1,80 +1,42 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import Timestamp from "./Timestamp";
-import Tippy from "@tippyjs/react";
-
-import { UserContext } from "./UserContext";
-const Message = ({
-  msg,
-  currentUser,
-  getRef,
-  timeStampFunc,
-  checkHoverState,
-  getPosition,
-  handleMouseOut,
-}) => {
-  const [, setHoverTime] = useState(false);
-
-  const [pos, setPos] = useState({});
-  const [userPos, setUserPos] = useState(false);
-
+import React, { useEffect, useRef } from "react";
+const Message = ({ msg, currentUser, getPosition, handleMouseOut }) => {
   const messageRef = useRef();
-  const incomingRef = useRef();
-  const users = useContext(UserContext);
-  const sender = users.filter((user) => {
-    if (user.name === msg.user) {
-      return user;
-    }
-  });
-
   const bottom = document.getElementById("bottom");
-
   useEffect(() => {
     bottom.scrollIntoView({ block: "end" });
   }, []);
-  const handleUser = (user) => {
-    if (user === currentUser) {
+  const handleUser = (msg) => {
+    if (msg.id === currentUser) {
       return "currentUser-text-container";
     }
-    if (user === "admin") {
+    if (msg.user === "admin") {
       return "admin-text-container";
     } else {
       return "incoming-text-container";
     }
   };
-  const handleTextStyle = (user) => {
-    if (user === currentUser) {
+  const handleTextStyle = (msg) => {
+    if (msg.id === currentUser) {
       return "currentUser-message";
     }
-    if (user === "admin") {
+    if (msg.user === "admin") {
       return "admin-message";
     } else {
       return "incoming-message";
     }
   };
-
-  let sentAt = new Date(msg.sentAt);
-
-  const handleUserHover = () => {
-    setUserPos(true);
-  };
-  const handleUserOut = () => {
-    setUserPos(false);
-  };
-  const photoRef = useRef();
   let userPosRef;
   if (messageRef.current) {
     userPosRef = messageRef.current.getBoundingClientRect();
   }
-
   return (
     <div className="messages">
-  
-      <div id={msg.sentAt} className={handleUser(msg.user)}>
+      <div id={msg.sentAt} className={handleUser(msg)}>
         <div ref={messageRef} className="message-profile-container">
-          {msg.user !== "admin" && msg.user !== currentUser ? (
+          {msg.user !== "admin" && msg.id !== currentUser ? (
             <span
               onMouseEnter={(e) => {
-                getPosition(e, msg, msg.user, currentUser === msg.user);
+                getPosition(e, msg, msg.user, currentUser === msg.id);
               }}
               onMouseLeave={() => {
                 handleMouseOut();
@@ -85,15 +47,14 @@ const Message = ({
               className="profile-picture-container"
             ></span>
           ) : null}
-
           <p
             onMouseEnter={(e) => {
-              getPosition(e, msg, null, currentUser === msg.user);
+              getPosition(e, msg, null, currentUser === msg.id);
             }}
             onMouseLeave={() => {
               handleMouseOut();
             }}
-            className={handleTextStyle(msg.user)}
+            className={handleTextStyle(msg)}
             dangerouslySetInnerHTML={{ __html: msg.text }}
           ></p>
         </div>{" "}
@@ -101,5 +62,4 @@ const Message = ({
     </div>
   );
 };
-
 export default Message;

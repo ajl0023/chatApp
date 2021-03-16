@@ -1,39 +1,21 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  createRef,
-  useContext,
-  useCallback,
-} from "react";
-import { useHistory } from "react-router-dom";
 import queryString from "query-string";
-import io from "socket.io-client";
-import Timestamp from "./Timestamp";
-import ContentEditable from "react-contenteditable";
-import Message from "./Message";
-import { v1 as uuid } from "uuid";
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import Input from "./Input";
-import Users from "./Users";
-import { UserContext } from "./UserContext";
+import Message from "./Message";
 import { getSocket } from "./socketInstance";
-import Tippy from "@tippyjs/react";
-
-const Chat = ({ location, socket, disconnect }) => {
-  const [currentUser, setCurrentUser] = useState("");
-  const [, setAllMessages] = useState([]);
+import { UserContext } from "./UserContext";
+import Users from "./Users";
+const Chat = ({ location }) => {
   const [formattedMessages, setFormattedMessages] = useState([]);
   const [text, setText] = useState("");
-  const [chat, setChat] = useState([]);
-  const [test, setTest] = useState("");
+  const [, setChat] = useState([]);
   const [users, setUsers] = useState([]);
   const { name, room } = queryString.parse(location.search);
-  const [position, setPosition] = useState({});
-  const [hoveredState, setHoverState] = useState(false);
-  const [hoveredMessage, setHoveredMessage] = useState({});
-
+  const [, setPosition] = useState({});
+  const [, setHoverState] = useState(false);
+  const [, setHoveredMessage] = useState({});
   const scrollToBottom = useRef(null);
-
   const history = useHistory();
   const scrollContainer = useRef();
   useEffect(() => {
@@ -44,16 +26,13 @@ const Chat = ({ location, socket, disconnect }) => {
     });
     window.addEventListener("beforeunload", (e) => {
       e.preventDefault();
-
       getSocket.emit("disconnectUser", name, room);
     });
     return () => {
       let tooltipContainer = document.getElementById("tooltip-container");
-
       let root = document.getElementById("root");
       while (tooltipContainer) {
         root.removeChild(tooltipContainer);
-
         tooltipContainer = document.getElementById("tooltip-container");
       }
       getSocket.emit("disconnectUser", name, room);
@@ -68,20 +47,16 @@ const Chat = ({ location, socket, disconnect }) => {
       setChat((messages) => {
         const messagesCopy = JSON.parse(JSON.stringify(messages));
         let messageObj = {};
-        let length = messagesCopy.length;
-
         let lastMessageIndex = messagesCopy.length - 1;
         let prop =
           messagesCopy[lastMessageIndex] &&
           Object.getOwnPropertyNames(messagesCopy[lastMessageIndex])[0];
         if (prop !== "admin" && messages.length > 1) {
           let sentDate = message.sentAt;
-
           let recentDate =
             messagesCopy[lastMessageIndex][prop][
               messagesCopy[lastMessageIndex][prop].length - 1
             ].sentAt;
-
           let oneHour = 3.6 * Math.pow(10, 6);
           if (sentDate - recentDate >= oneHour) {
             let sentAtHours = new Date(message.sentAt).getHours();
@@ -95,7 +70,6 @@ const Chat = ({ location, socket, disconnect }) => {
             }:${sentAtMinutes < 10 ? "0" + sentAtMinutes : sentAtMinutes} ${
               sentAtHours > 12 ? "PM" : "AM"
             }`;
-
             messagesCopy.push({
               admin: [
                 {
@@ -107,7 +81,6 @@ const Chat = ({ location, socket, disconnect }) => {
             prop = "admin";
           }
         }
-
         if (lastMessageIndex >= 0 && prop === message.user) {
           messagesCopy[lastMessageIndex][message.user] = [
             ...messagesCopy[lastMessageIndex][message.user],
@@ -117,43 +90,32 @@ const Chat = ({ location, socket, disconnect }) => {
           messageObj[message.user] = [message];
           messagesCopy.push(messageObj);
         }
-
         messagesCopy.forEach((messages) => {
           let prop = Object.getOwnPropertyNames(messages)[0];
-
           messages[prop].forEach((message) => {
             delete message.profile;
           });
-
           let lastIndex = messages[prop].length - 1;
-
           messages[prop][lastIndex].profile =
             messages[prop][lastIndex].gradient;
         });
-
         let toArray = messagesCopy.reduce((arr, message) => {
-          let length = messagesCopy.length;
-          let f = 0;
           let prop = Object.getOwnPropertyNames(message)[0];
           for (let i = 0; i < message[prop].length; i++) {
             arr.push(message[prop][i]);
           }
           return arr;
         }, []);
-
-        setFormattedMessages((msg) => {
+        setFormattedMessages(() => {
           return toArray;
         });
         return messagesCopy;
       });
     });
     getSocket.emit("initial", room);
-    let trimmedName = name.trim();
-    setCurrentUser(trimmedName);
   }, [location.search]);
-
-  const getRef = (ref) => {};
-  const handleMouseOut = (e) => {
+  const getRef = () => {};
+  const handleMouseOut = () => {
     setHoveredMessage(() => {
       return false;
     });
@@ -162,7 +124,6 @@ const Chat = ({ location, socket, disconnect }) => {
       tooltipContainer.removeChild(tooltipContainer.firstChild);
     }
   };
-
   const getPosition = (pos, msg, user, currentUser) => {
     if (user || (msg && msg.user !== "admin")) {
       setHoveredMessage(() => {
@@ -173,12 +134,10 @@ const Chat = ({ location, socket, disconnect }) => {
       });
       let contentNode = document.createElement("p");
       let tooltipContainer = document.getElementById("tooltip-container");
-
       if (msg && msg.sentAt && !user) {
         contentNode.className = "timestamp-hover-currentUser";
         let sentAtHours = new Date(msg.sentAt).getHours();
         let sentAtMinutes = new Date(msg.sentAt).getMinutes();
-
         contentNode.innerHTML = `${
           sentAtHours === 0
             ? 12
@@ -214,30 +173,26 @@ const Chat = ({ location, socket, disconnect }) => {
   };
   const handleScroll = () => {
     let tooltipContainer = document.getElementById("tooltip-container");
-
     setHoveredMessage((state) => {
       if (state.state) {
         let messagePos = state.message.target.getBoundingClientRect();
         let tooltipSize = tooltipContainer.getBoundingClientRect();
         let timestampTop =
           messagePos.y + messagePos.height / 2 - tooltipSize.height / 2;
-
         tooltipContainer.style.transform = `translate(${`${messagePos.right}px`},${`${timestampTop}px`})`;
         tooltipContainer.style.display = "block";
       }
       return state;
     });
   };
-  const handleResize = (e) => {
+  const handleResize = () => {
     let tooltipContainer = document.getElementById("tooltip-container");
-
     setHoveredMessage((state) => {
       if (state.state) {
         let messagePos = state.message.target.getBoundingClientRect();
         let tooltipSize = tooltipContainer.getBoundingClientRect();
         let timestampTop =
           messagePos.y + messagePos.height / 2 - tooltipSize.height / 2;
-
         tooltipContainer.style.transform = `translate(${`${messagePos.right}px`},${`${timestampTop}px`})`;
         tooltipContainer.style.display = "block";
       }
@@ -248,7 +203,6 @@ const Chat = ({ location, socket, disconnect }) => {
     window.addEventListener("resize", handleResize);
     let tooltip = document.createElement("div");
     tooltip.setAttribute("id", "tooltip-container");
-
     document.getElementById("root").appendChild(tooltip);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -258,22 +212,15 @@ const Chat = ({ location, socket, disconnect }) => {
     setText(e.target.innerText);
   };
   const handleSubmit = (e, ref) => {
-    // if (e.key === "Enter") {
-    //   let target = e.target.innerText.trim();
-    //   if (target.length === 0) {
-    //     e.preventDefault();
-    //   } else {
-    //     getSocket.emit("getMessages", e.target.value);
-    //   }
-    // }
-
     if (e.key === "Enter" || e.type === "click") {
       let target = ref.current.innerText.trim();
-
-      getSocket.emit("getMessages", name, room, target);
+      if (target.length > 0) {
+        getSocket.emit("getMessages", name, room, target);
+      } else {
+        return;
+      }
     }
   };
-
   const timeStampFunc = (pos, msg) => {
     setHoverState(true);
     setPosition(pos);
@@ -282,12 +229,7 @@ const Chat = ({ location, socket, disconnect }) => {
   const checkHoverState = (state) => {
     setHoverState(state);
   };
-
   const divRef = useRef(null);
-
-  let timeofLast = chat[chat.length - 1];
-  let displayTime;
-
   return (
     <>
       <div className="chat-wrapper">
@@ -299,7 +241,6 @@ const Chat = ({ location, socket, disconnect }) => {
                   <Users
                     handleMouseOut={handleMouseOut}
                     getPosition={getPosition}
-                    currentUser={currentUser}
                     users={user}
                   />
                 );
@@ -313,31 +254,35 @@ const Chat = ({ location, socket, disconnect }) => {
                 id="msg-box"
                 className="chat-message-box"
               >
-                <UserContext.Provider value={users}>
-                  <div ref={divRef} className="chat-box-container">
-                    {formattedMessages.map((msg, i) => {
-                      return (
-                        <Message
-                          getRef={getRef}
-                          key={i}
-                          getPosition={getPosition}
-                          handleMouseOut={handleMouseOut}
-                          checkHoverState={checkHoverState}
-                          timeStampFunc={timeStampFunc}
-                          displayTime={displayTime}
-                          currentUser={currentUser}
-                          location={location}
-                          msg={msg}
-                        />
-                      );
-                    })}
-                    <div
-                      id="bottom"
-                      className="bottom-of-div"
-                      ref={scrollToBottom}
-                    ></div>
-                  </div>
-                </UserContext.Provider>
+                <UserContext.Consumer>
+                  {({ currentUser }) => {
+                    console.log(currentUser);
+                    return (
+                      <div ref={divRef} className="chat-box-container">
+                        {formattedMessages.map((msg) => {
+                          return (
+                            <Message
+                              getRef={getRef}
+                              key={msg.sentAt}
+                              getPosition={getPosition}
+                              handleMouseOut={handleMouseOut}
+                              checkHoverState={checkHoverState}
+                              timeStampFunc={timeStampFunc}
+                              currentUser={currentUser}
+                              location={location}
+                              msg={msg}
+                            />
+                          );
+                        })}
+                        <div
+                          id="bottom"
+                          className="bottom-of-div"
+                          ref={scrollToBottom}
+                        ></div>
+                      </div>
+                    );
+                  }}
+                </UserContext.Consumer>
               </div>
               <div></div>
               <Input
@@ -352,5 +297,4 @@ const Chat = ({ location, socket, disconnect }) => {
     </>
   );
 };
-
 export default Chat;

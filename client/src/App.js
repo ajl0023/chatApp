@@ -1,40 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Chat from "./Chat";
+import Join from "./Join";
+import { UserContext } from "./UserContext";
 
 import "./myApp.css";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import io from "socket.io-client";
-
-import Join from "./Join";
-import Chat from "./Chat";
-import { UserContext } from "./UserContext";
-//change
-
 const App = () => {
-  const [socketId, setSocketId] = useState("online");
+  const [currentUser, setCurrentUser] = useState({});
 
-  const [socket, setSocket] = useState([]);
-  const [socketState, setSocketState] = useState(false);
-  useEffect(() => {}, [socketState]);
-  const getSocket = (socket) => {
-    setSocket(socket);
+  const getCurrentUser = (user) => {
+    setCurrentUser(user);
   };
   return (
     <Router>
       {" "}
-      <Route
-        path="/"
-        exact
-        render={(props) => (
-          <Join getSocket={getSocket} socket={socket} {...props} />
-        )}
-      ></Route>
-      <Route
-        path="/chat"
-        exact
-        render={(props) => <Chat socket={socket} {...props} />}
-      ></Route>
+      <UserContext.Provider
+        value={{
+          currentUser,
+        }}
+      >
+        <Route
+          path="/"
+          exact
+          render={(props) => (
+            <Join getCurrentUser={getCurrentUser} {...props} />
+          )}
+        ></Route>
+        <Route
+          path="/chat"
+          exact
+          render={(props) => <Chat {...props} />}
+        ></Route>
+      </UserContext.Provider>
     </Router>
   );
 };
-
 export default App;

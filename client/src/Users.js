@@ -1,31 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import Timestamp from "./Timestamp";
+import React, { useRef } from "react";
 const Users = (props) => {
-  const [hoverState, setHoverState] = useState(false);
-  const [pos, setPos] = useState(false);
-  const [color, setColor] = useState("");
-  const [bounding, setBounding] = useState();
   const user = useRef();
-  const handleHover = () => {
-    setHoverState(true);
-    setPos(user.current.getBoundingClientRect());
-  };
-  const handleHoverOut = () => {
-    setHoverState(false);
-  };
-  useEffect(() => {}, []);
-  useEffect(() => {
-    if (user.current) {
-    }
-  });
-
   return (
     <div ref={user}>
       <div
         onMouseOver={(e) => {
           props.getPosition(e, null, props.users.name);
         }}
-        onMouseOut={(e) => {
+        onMouseOut={() => {
           props.handleMouseOut();
         }}
         className="userbar-image-container"
@@ -38,5 +20,4 @@ const Users = (props) => {
     </div>
   );
 };
-
 export default Users;
