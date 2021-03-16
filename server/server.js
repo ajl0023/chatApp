@@ -42,8 +42,8 @@ io.on("connection", (socket) => {
 
     io.in(room).emit("getUsers", getUsersInRoom(room));
     console.log(room);
-    console.log(socket);
-    console.log(socket.to(room).broadcast.emit());
+  
+    console.log(socket.to(room).broadcast);
     socket.to(room).broadcast.emit("getMessages", {
       user: "admin",
       text: `User ${name} has just joined`,
