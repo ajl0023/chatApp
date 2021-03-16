@@ -10,9 +10,9 @@ export default function SignIn(props) {
   const history = useHistory();
   useEffect(() => {
     // getNewSocket();
-    getSocket.on("connect", () => {
+    // getSocket.on("connect", () => {
       
-    });
+    // });
     
     // if (!getSocket.id) {
     //   io.connect();
