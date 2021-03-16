@@ -25,6 +25,7 @@ io.use((socket, next) => {
   next();
 });
 io.on("connection", (socket) => {
+  console.log("client connected");
   socket.on("join", (name, room, id, callback) => {
     const user = {};
     user["name"] = name;
@@ -42,7 +43,7 @@ io.on("connection", (socket) => {
 
     io.in(room).emit("getUsers", getUsersInRoom(room));
     console.log(room);
-  
+
     console.log(socket.to(room).broadcast);
     socket.to(room).broadcast.emit("getMessages", {
       user: "admin",
