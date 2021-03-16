@@ -256,7 +256,6 @@ const Chat = ({ location }) => {
               >
                 <UserContext.Consumer>
                   {({ currentUser }) => {
-                    console.log(currentUser);
                     return (
                       <div ref={divRef} className="chat-box-container">
                         {formattedMessages.map((msg) => {
