@@ -41,6 +41,8 @@ io.on("connection", (socket) => {
     socket.join(room);
 
     io.in(room).emit("getUsers", getUsersInRoom(room));
+    console.log(room);
+    console.log(socket);
     console.log(socket.to(room).broadcast.emit());
     socket.to(room).broadcast.emit("getMessages", {
       user: "admin",
