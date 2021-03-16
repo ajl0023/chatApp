@@ -1,31 +1,19 @@
 const express = require("express");
-
-const {
-  addUser,
-  getUser,
-  getUsersInRoom,
-  removeUser,
-  checkDuplicate,
-  users,
-} = require("./users");
+const { addUser, getUsersInRoom, removeUser } = require("./users");
 const path = require("path");
 const PORT = process.env.PORT || 5500;
 const app = express();
 const server = require("http").createServer(app);
-server.listen(PORT, () => {
-  console.log(`connected to port ${PORT}`);
-});
+server.listen(PORT, () => {});
 const io = require("socket.io")(server);
 app.use(express.static(path.join(__dirname, "../client/build")));
-
-app.get("/", function (req, res) {
+app.get("/", (res) => {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 io.use((socket, next) => {
   next();
 });
 io.on("connection", (socket) => {
-  console.log(socket.user);
   socket.on("join", (name, room, id, callback) => {
     const user = {};
     user["name"] = name;
@@ -33,21 +21,13 @@ io.on("connection", (socket) => {
     user["id"] = id;
     let createUser = addUser(user);
     socket.emit("join", createUser);
-
     if (createUser.error) {
       callback(createUser);
       return;
     }
     callback("success");
     socket.join(room);
-
     io.in(room).emit("getUsers", getUsersInRoom(room));
-    console.log(socket);
-    // console.log(socket.to(room));
-    console.log(room);
-
-    console.log(socket.to(room).broadcast);
-
     socket.to(room).emit("getMessages", {
       user: "admin",
       text: `User ${name} has just joined`,
@@ -61,7 +41,6 @@ io.on("connection", (socket) => {
   });
   socket.on("getUsers", (room) => {
     const findUsers = getUsersInRoom(room);
-
     socket.emit("getUsers", findUsers);
   });
   socket.on("getMessages", (name, room, text) => {
@@ -81,6 +60,7 @@ io.on("connection", (socket) => {
     io.in(room).emit("getMessages", {
       user: name,
       text: text,
+      id: socket.id,
       gradient: getUsersInRoom(room).find((user) => {
         if (name === user.name) {
           return user;
@@ -102,7 +82,6 @@ io.on("connection", (socket) => {
         text: "you have been disconnected",
       });
     }
-
     callback(findUser);
   });
   socket.on("disconnectUser", (name, room) => {
@@ -117,9 +96,7 @@ io.on("connection", (socket) => {
     }
   });
 });
-
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
-
 module.exports = app;

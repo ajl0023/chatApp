@@ -1,6 +1,6 @@
 const users = [];
 const ids = [];
-const addUser = ({ id, name, room, image }) => {
+const addUser = ({ id, name, room }) => {
   name = name.trim();
   room = room.trim();
   const existingUser = users.find(
@@ -23,33 +23,17 @@ const addUser = ({ id, name, room, image }) => {
     }, 100%, 50%, 1))`,
   };
   users.push(user);
-
   return { user };
-
-  // if (existingUser) {
-  //   return { error: "Username is taken." };
-  // }
 };
 const getUser = (id) => users.find((user) => user.id === id);
 const getUsersInRoom = (room) => users.filter((user) => user.room === room);
-const checkDuplicate = (room) => {
-  let filteredByRoom = users.filter((user) => {
-    if (user.room === room) {
-      return user;
-    }
-  });
-
-  //
-};
 const removeUser = (id) => {
   const index = users.findIndex((user) => user.id === id);
-
   if (index !== -1) return users.splice(index, 1)[0];
 };
 const socketConnected = (id) => {
   ids.push(id);
 };
-
 module.exports = {
   socketConnected,
   users,
@@ -57,5 +41,4 @@ module.exports = {
   getUser,
   getUsersInRoom,
   removeUser,
-  checkDuplicate,
 };
