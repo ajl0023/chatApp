@@ -48,10 +48,10 @@ io.on("connection", (socket) => {
 
     console.log(socket.to(room).broadcast);
 
-    // socket.to(room).broadcast.emit("getMessages", {
-    //   user: "admin",
-    //   text: `User ${name} has just joined`,
-    // });
+    socket.to(room).emit("getMessages", {
+      user: "admin",
+      text: `User ${name} has just joined`,
+    });
   });
   socket.on("initial", (room) => {
     socket.emit("getMessages", {

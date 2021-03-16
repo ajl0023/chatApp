@@ -9,14 +9,12 @@ export default function SignIn(props) {
   const [error, setError] = useState(false);
   const history = useHistory();
   useEffect(() => {
-    // getNewSocket();
-    // getSocket.on("connect", () => {
-      
-    // });
-    
-    // if (!getSocket.id) {
-    //   io.connect();
-    // }
+    getNewSocket();
+    getSocket.on("connect", () => {});
+
+    if (!getSocket.id) {
+      io.connect();
+    }
 
     getSocket.on("join", (data) => {
       if (data.error) {
@@ -26,31 +24,20 @@ export default function SignIn(props) {
   }, []);
   const handleRoute = (e) => {
     if (e.key === "Enter" || e.type === "click") {
-      
-      getSocket.emit(
-        "join",
-        name,
-        room,
-        getSocket.id,
-        (resp) => {
-          
-          if (resp.error) {
-            
-            return;
-          } else {
-            
-            history.push(`/chat?name=${name}&room=${room}`);
-          }
+      getSocket.emit("join", name, room, getSocket.id, (resp) => {
+        if (resp.error) {
+          return;
+        } else {
+          history.push(`/chat?name=${name}&room=${room}`);
         }
-      
-      );
+      });
     }
   };
 
   const handleChange = (e) => {
     setName(e.target.value);
   };
- 
+
   return (
     <div className="join-wrapper">
       <div
