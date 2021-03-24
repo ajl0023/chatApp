@@ -1,6 +1,6 @@
 import io from "socket.io-client";
-export let getSocket = io();
+export let getSocket = io("localhost:5500");
 //localhost:5500
 export const getNewSocket = () => {
-  getSocket = io();
+  getSocket = io("localhost:5500");
 };

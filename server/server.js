@@ -5,7 +5,11 @@ const PORT = process.env.PORT || 5500;
 const app = express();
 const server = require("http").createServer(app);
 server.listen(PORT, () => {});
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, {
+  cors: {
+    host: "localhost:3001",
+  },
+});
 app.use(express.static(path.join(__dirname, "../client/build")));
 app.get("/", (res) => {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));

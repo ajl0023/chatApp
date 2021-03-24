@@ -458,4 +458,11 @@ body {
   font-weight: 300;
   width: 100%;
 }
+
+@media (max-width: 910px) {
+  .chat-message-container {
+    padding: 5px;
+    width: 100vw !important;
+  }
+}
 /*# sourceMappingURL=myApp.css.map */
