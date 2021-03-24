@@ -318,7 +318,7 @@ body {
   font-weight: 300;
   width: 100%;
 }
-@media (max-width: 910px) {
+@media screen and (max-width: 910px) {
   .chat-message-container {
     padding: 5px !important;
     width: 100vw !important;
