@@ -461,7 +461,7 @@ body {
 
 @media (max-width: 910px) {
   .chat-message-container {
-    padding: 5px;
+    padding: 5px !important;
     width: 100vw !important;
   }
 }
