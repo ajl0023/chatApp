@@ -1,3 +1,3 @@
 git add . 
-git commit -m "changed server.js to index.js"
+git commit -m "editing express static"
 git push origin master

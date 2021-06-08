@@ -4,10 +4,12 @@ const path = require("path");
 const PORT = process.env.PORT || 5500;
 const app = express();
 const server = require("http").createServer(app);
+app.use(express.static(path.join(__dirname, "./client")));
+
 server.listen(PORT, () => {});
 const io = require("socket.io")(server);
-app.use(express.static(path.join(__dirname, "./client")));
 app.get("/", (res) => {
+  console.log(50);
   res.sendFile(path.join(__dirname, "./client", "index.html"));
 });
 io.use((socket, next) => {
