@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { ReactComponent as SubmitButton } from "./submit-button.svg";
 const Input = React.forwardRef(({ handleSubmit, value }, inputRef) => {
   let compare;

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Chat from "./Chat";
 import Join from "./Join";
+import "./myApp.css";
 import { UserContext } from "./UserContext";
 
-import "./myApp.css";
 const App = () => {
   const [currentUser, setCurrentUser] = useState({});
 
