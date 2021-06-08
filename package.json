@@ -1,7 +1,5 @@
 {
   "name": "chatapp",
- 
-
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,7 +11,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "nodemon ./server/server.js",
+    "start": "nodemon ./server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
