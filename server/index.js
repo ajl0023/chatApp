@@ -9,7 +9,6 @@ app.use(express.static(path.join(__dirname, "./client")));
 server.listen(PORT, () => {});
 const io = require("socket.io")(server);
 app.get("/", (res) => {
-  console.log(50);
   res.sendFile(path.join(__dirname, "./client", "index.html"));
 });
 io.use((socket, next) => {

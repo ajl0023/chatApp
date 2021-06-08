@@ -1,6 +1,6 @@
 import io from "socket.io-client";
-export let getSocket = io("https://chat-app-tan.vercel.app");
+export let getSocket = io("");
 //localhost:5500
 export const getNewSocket = () => {
-  getSocket = io("https://chat-app-tan.vercel.app");
+  getSocket = io("");
 };
