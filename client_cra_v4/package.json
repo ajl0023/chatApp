@@ -1,7 +1,7 @@
 {
   "name": "client_cra_v4",
   "version": "0.1.0",
-  "type": "module",
+ 
   "private": true,
   "resolutions": {
     "//": "See https://github.com/facebook/create-react-app/issues/11773",

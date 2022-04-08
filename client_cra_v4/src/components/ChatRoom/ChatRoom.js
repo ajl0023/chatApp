@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import SocketContext from "../../contexts/SocketContext/SocketContext";
-
+import { v4 as uuid } from "uuid";
 import { getNewSocket, getSocket } from "../../socketInstance";
 import MainInput from "../MainInput/MainInput";
 import MessageContainer from "../MessageContainer/MessageContainer";
@@ -9,9 +9,6 @@ import UserBar from "../UserBar/UserBar";
 import "./ChatRoom.scoped.scss";
 import _ from "lodash";
 export default function ChatRoom(props) {
-  const [name, setName] = useState("");
-  const [room, setRoom] = useState("");
-  const [error, setError] = useState(false);
   const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]);
   const handleChange = (value, cb) => {
@@ -21,9 +18,18 @@ export default function ChatRoom(props) {
   useEffect(() => {
     socket.emit("get_users");
     socket.on("join", (users) => {
-      console.log(users);
       setUsers(users);
     });
+    socket.on("_disconnect", (users, user) => {
+      users = users && users.length > 0 ? users : [];
+
+      setUsers(users);
+    });
+  }, []);
+  useEffect(() => {
+    return () => {
+      socket.close();
+    };
   }, []);
 
   useEffect(() => {

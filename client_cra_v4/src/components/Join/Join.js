@@ -24,14 +24,21 @@ export default function Join(props) {
     context.setSocket();
     setIsValid(true);
   };
-
+  useEffect(() => {
+    setName("test");
+  }, []);
+  useEffect(() => {
+    if (name.length > 0) {
+      handleEnter();
+    }
+  }, [name]);
   useEffect(() => {
     if (socket && isValid) {
       socket.emit("join", name, room, (user) => {
         navigate(`/${user.room}`);
       });
     }
-  }, [socket]);
+  }, [socket, isValid]);
   return (
     <div className="wrapper">
       <div className="container">

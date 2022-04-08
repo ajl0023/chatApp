@@ -5,11 +5,9 @@ import { getNewSocket, getSocket } from "../../socketInstance";
 import moment from "moment";
 import "./Message.scoped.scss";
 export default function Message(props) {
-  const handleChange = (value, cb) => {
-    cb(value);
-  };
-  const handleEnter = () => {};
-  console.log(props.message.user, props.socket_id);
+  if (props.message.user.name === "admin") {
+    return <div className="admin-message">{props.message.message.text}</div>;
+  }
   return (
     <div
       key={props.message.message.id}

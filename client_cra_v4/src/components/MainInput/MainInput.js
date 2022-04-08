@@ -35,6 +35,7 @@ export default function MainInput(props) {
         value={input}
         className="main-input"
       />
+      {input.trim().length > 0 && <div className="button-send">Send</div>}
     </div>
   );
 }
